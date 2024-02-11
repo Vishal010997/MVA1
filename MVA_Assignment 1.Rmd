@@ -1,0 +1,132 @@
+---
+title: "Assignment 1 MVA"
+output: html_document
+date: "2024-02-11"
+---
+1. Ask an important question you want answered (1 at least) : 
+Answer:
+
+
+Question 1: How does the price of gold relate to various economic indicators and market factors?
+
+
+Question 2: Variable Impact of economic indicators and market factors with respect to time (Year-Month trend)
+
+2. Answer why this question(s) is/are important to you: 
+
+Answer: 
+
+Understanding the relationship between the price of gold and economic indicators can provide insights into market trends, investment opportunities, and potential risks. For example, knowing how gold prices respond to changes in interest rates, inflation, and currency exchange rates can help investors make informed decisions about portfolio allocation and risk management.
+
+
+3. Find and collect data
+(need one dependent variable and more than 3 dependent variables): 
+
+Answer: 
+
+Data Collection:
+
+Source: Kaggle
+1.	Dependent Variable (Target):
+•    Gold Price
+2.	Independent Variables:
+•     Crude Oil Price
+•     Interest Rate
+•    USD/INR Exchange Rate
+•    Sensex (Stock Market Index)
+•    CPI (Consumer Price Index)
+•    USD Index
+
+4. Describe your data (create a data dictionary): 4 Points
+
+Answer: 
+Attribute/Variable description:
+
+•	Gold_Price: The price of gold per unit (e.g., ounce) over time.
+•	Crude_Oil: The price of crude oil per barrel over time.
+•	Interest_Rate: The prevailing interest rate over time.
+•	USD_INR: The exchange rate of US dollars to Indian rupees over time.
+•	Sensex: The value of the Sensex (stock market index) over time.
+•	CPI: The Consumer Price Index measuring inflation over time.
+•	USD_Index: The value of the US Dollar Index representing the value of the US dollar relative to a basket of foreign currencies over time.
+
+
+Dictionary created below
+```{r}
+library(readxl)
+GoldUP <- read_excel("C:/Rutgers/Subjects/Spring Sem/Multivariate Analysis/GoldUP.xlsx")
+View(GoldUP)
+```
+
+Data Dictionary with data
+```{r}
+# Create a data frame with variable names, descriptions, and data points
+data_info <- data.frame(
+  Variable_Name = c("Date","Gold_Price", "Crude_Oil", "Interest_Rate", "USD_INR", "Sensex", "CPI", "USD_Index"),
+  Description = c("Date","The price of gold per unit (e.g., ounce) over time.",
+                  "The price of crude oil per barrel over time.",
+                  "The prevailing interest rate over time.",
+                  "The exchange rate of US dollars to Indian rupees over time.",
+                  "The value of the Sensex (stock market index) over time.",
+                  "The Consumer Price Index measuring inflation over time.",
+                  "The value of the US Dollar Index representing the value of the US dollar relative to a basket of foreign currencies over time."),
+  Data_Points = sapply(GoldUP, function(x) paste(head(x, 5), collapse = ", "))
+)
+
+# Print the data frame
+print(data_info)
+```
+```{r}
+# Descriptive statistics
+summary(GoldUP)
+is.na(GoldUP)
+sapply(GoldUP, mean)
+sapply(GoldUP, sd)
+
+# Check data types
+str(GoldUP)
+
+# Convert non-numeric variables to numeric
+# Convert non-numeric variables to numeric
+GoldUP$Gold_Price <- as.numeric(GoldUP$Date)
+
+GoldUP$Gold_Price <- as.numeric(GoldUP$Gold_Price)
+GoldUP$Crude_Oil <- as.numeric(GoldUP$Crude_Oil)
+GoldUP$Interest_Rate <- as.numeric(GoldUP$Interest_Rate)
+GoldUP$USD_INR <- as.numeric(GoldUP$USD_INR)
+GoldUP$Sensex <- as.numeric(GoldUP$Sensex)
+GoldUP$CPI <- as.numeric(GoldUP$CPI)
+GoldUP$USD_Index <- as.numeric(GoldUP$USD_Index)
+# Repeat this for all variables if needed
+
+# Check data types again
+str(GoldUP)
+
+# Check for non-numeric values in each column
+sapply(GoldUP, function(x) any(!is.na(as.numeric(x))))
+
+# Convert non-numeric values to NA
+GoldUP[] <- lapply(GoldUP, function(x) ifelse(is.na(as.numeric(x)), NA, as.numeric(x)))
+
+# Compute correlations
+correlation_matrix <- cor(GoldUP, use = "complete.obs")
+print(correlation_matrix)
+
+
+# Check the class of your data
+class(GoldUP)
+
+# If it's not a dataframe, convert it to a dataframe
+if (!is.data.frame(GoldUP)) {
+  GoldUP <- as.data.frame(GoldUP)
+}
+
+# Check the variable names in your dataframe
+names(GoldUP)
+
+# Make sure the variable names are referenced correctly in your model formula
+# For example:
+model <- lm(Gold_Price ~ Crude_Oil + Interest_Rate + USD_INR + Sensex + CPI + USD_Index, data = GoldUP)
+
+summary(model)
+```
